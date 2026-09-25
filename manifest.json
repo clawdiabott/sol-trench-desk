@@ -1,0 +1,9 @@
+{
+  "name": "SOL Trench Desk",
+  "short_name": "Trench Desk",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#07080c",
+  "theme_color": "#07080c",
+  "description": "Live Solana meme token dashboard"
+}
