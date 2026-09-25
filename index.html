@@ -13,9 +13,78 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Syne:wght@800&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    :root { --bg:#07080c; --panel:#10131b; --line:#232a38; --text:#eef2f8; --muted:#8b95a8; --green:#3dff9a; --red:#ff4d6d; --amber:#ffc14d; }
+    * { box-sizing: border-box; }
+    html, body { margin:0; height:100%; background:var(--bg); color:var(--text); font-family:"IBM Plex Mono", monospace; }
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; padding:14px 16px 8px; }
+    h1 { font-family:Syne,sans-serif; margin:0; font-size:28px; letter-spacing:-.04em; }
+    h1 span { color:var(--green); }
+    header p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 16px 12px; }
+    .seg { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+    .seg span { color:var(--muted); font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+    button, input, select { font-family:inherit; font-size:12px; color:var(--text); background:#121722; border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+    button { padding:6px 9px; } input { padding:6px 9px; min-width:140px; } select { padding:6px 8px; }
+    .chip.on { background:rgba(61,255,154,.14); border-color:rgba(61,255,154,.45); color:var(--green); font-weight:700; }
+    .desk { flex:1; display:grid; grid-template-columns:320px 1fr; min-height:0; }
+    .list { border-top:1px solid var(--line); border-right:1px solid var(--line); overflow:auto; background:#0c1018; }
+    .row { display:grid; grid-template-columns:28px 1fr auto auto; gap:8px; align-items:center; padding:9px 12px; border-bottom:1px solid #1a2030; cursor:pointer; }
+    .row:hover { background:#151b27; } .row.on { background:rgba(61,255,154,.07); box-shadow:inset 3px 0 0 var(--green); }
+    .row img { width:28px; height:28px; border-radius:50%; background:#222; }
+    .sym { font-weight:700; font-size:12px; } .sub { color:var(--muted); font-size:10px; }
+    .up { color:var(--green); } .dn { color:var(--red); } .score { font-weight:700; font-size:12px; }
+    .buy { color:var(--green); } .watch { color:var(--amber); } .avoid { color:var(--red); }
+    .chart-side { display:flex; flex-direction:column; min-width:0; min-height:0; border-top:1px solid var(--line); }
+    .chart-meta { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:10px 14px; border-bottom:1px solid var(--line); }
+    .chart-meta h2 { margin:0; font-size:16px; }
+    .stats { display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; } .stats b { color:var(--text); }
+    #tv { flex:1; min-height:420px; } .hint { padding:8px 14px; color:#6d778a; font-size:11px; } .hint a { color:var(--green); }
+    footer { padding:8px 16px 14px; color:#6d778a; font-size:11px; }
+    @media (max-width:900px) { .desk { grid-template-columns:1fr; } .list { max-height:220px; border-right:0; } #tv { min-height:360px; } }
+  </style>
 </head>
 <body>
-<p>Loading dashboard files next...</p>
-<p>Open this after deploy.</p>
+  <header>
+    <div>
+      <h1>SOL <span>TRENCH DESK</span></h1>
+      <p>Click a token. Drag the chart to pan. Scroll to zoom. Switch intervals for candles.</p>
+    </div>
+    <div class="seg"><span>Updated</span> <b id="updated">—</b></div>
+  </header>
+  <div class="bar">
+    <input id="search" placeholder="filter ticker" />
+    <select id="sort">
+      <option value="score">Score</option>
+      <option value="mcap">Market cap</option>
+      <option value="vol">Volume</option>
+      <option value="chg">24h %</option>
+    </select>
+    <div class="seg">
+      <span>Interval</span>
+      <button class="chip" data-tf="1m">1m</button>
+      <button class="chip" data-tf="5m">5m</button>
+      <button class="chip on" data-tf="15m">15m</button>
+      <button class="chip" data-tf="1h">1H</button>
+      <button class="chip" data-tf="4h">4H</button>
+      <button class="chip" data-tf="1d">1D</button>
+    </div>
+    <button id="fit">Fit</button>
+    <button id="refresh">Refresh tape</button>
+  </div>
+  <div class="desk">
+    <aside class="list" id="list">Loading…</aside>
+    <section class="chart-side">
+      <div class="chart-meta">
+        <h2 id="title">Select a token</h2>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div id="tv"></div>
+      <div class="hint" id="hint">Drag left/right to move through time. Scroll to zoom candles.</div>
+    </section>
+  </div>
+  <footer>Not financial advice. Buy scores use DexScreener liquidity, turnover, momentum and buy/sell tilt.</footer>
+  <script src="app.js"></script>
 </body>
 </html>
